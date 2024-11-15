@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:account
+    driverClassName: org.h2.Driver
+    username: sa
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: update

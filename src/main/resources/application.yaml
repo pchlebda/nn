@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/account;DB_CLOSE_ON_EXIT=FALSE;
+    driverClassName: org.h2.Driver
+    username: sa
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+nbp:
+  api:
+    url: https://api.nbp.pl/api/exchangerates/rates/a

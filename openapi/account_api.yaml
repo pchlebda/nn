@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: Account API
+  version: 1.0.0
+  description: API for managing accounts, including registration, status checking, and currency exchange.
+
+paths:
+  /account:
+    post:
+      summary: Register a new account
+      operationId: registerAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterAccountRequest'
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterAccountResponse'
+
+    get:
+      summary: Get account status
+      operationId: getAccountStatus
+      parameters:
+        - in: header
+          name: x-api-key
+          required: true
+          schema:
+            type: string
+          description: API key for account access
+      responses:
+        '200':
+          description: Account status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '404':
+          description: Account not found
+
+  /account/exchange:
+    post:
+      summary: Exchange currency for an account
+      operationId: exchangeCurrency
+      parameters:
+        - in: header
+          name: x-api-key
+          required: true
+          schema:
+            type: string
+          description: API key for account access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountExchange'
+      responses:
+        '200':
+          description: Currency exchange completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+
+components:
+  schemas:
+    RegisterAccountRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - balancePLN
+      properties:
+        firstName:
+          type: string
+          description: First name of the account holder
+        lastName:
+          type: string
+          description: Last name of the account holder
+        balancePLN:
+          type: number
+          format: double
+          multipleOf: 0.01
+          minimum: 0.0
+          description: Initial balance in PLN
+          example: 1000.00
+
+    Account:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: First name of the account holder
+        lastName:
+          type: string
+          description: Last name of the account holder
+        balancePLN:
+          type: number
+          format: double
+          multipleOf: 0.01
+          description: Balance in PLN
+        balanceUSD:
+          type: number
+          format: double
+          multipleOf: 0.01
+          description: Balance in USD
+
+    RegisterAccountResponse:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: First name of the account holder
+        lastName:
+          type: string
+          description: Last name of the account holder
+        balancePLN:
+          type: number
+          format: double
+          multipleOf: 0.01
+          description: Balance in PLN
+        balanceUSD:
+          type: number
+          format: double
+          multipleOf: 0.01
+          description: Balance in USD
+        apiKey:
+          type: string
+          description: Api key to access account
+          example: ea6aae7d-4084-4be4-b520-7ac1c9fb2799
+
+    AccountExchange:
+      type: object
+      required:
+        - from
+        - to
+        - amount
+      properties:
+        from:
+          type: string
+          description: Currency to exchange from
+          pattern: "(?i)PLN|USD"
+        to:
+          type: string
+          description: Currency to exchange to
+          pattern: "(?i)PLN|USD"
+        amount:
+          type: number
+          format: double
+          minimum: 0.0
+          multipleOf: 0.01
+          exclusiveMinimum: true
+          description: Amount to exchange
+          example: 100.00
